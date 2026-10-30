@@ -3,17 +3,17 @@
 #'  model can predict new data. Lower perplexity indicates a better model.
 #' @param x Can be one of
 #'  \itemize{
-#'  \item A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object returned by
+#'  \item A \linkS4class{SingleCellExperiment} object returned by
 #'  \link{celda_C}, \link{celda_G} or \link{celda_CG}, with the matrix
 #'  located in the \code{useAssay} assay slot.
 #'  Rows represent features and columns represent cells.
 #'  \item Integer counts matrix. Rows represent features and columns represent
 #'  cells. This matrix should be the same as the one used to generate
 #'  \code{celdaMod}.}
-#' @param useAssay A string specifying which \link[SummarizedExperiment]{assay}
-#'  slot to use if \code{x} is a \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.
+#' @param useAssay A string specifying which \link{assay}
+#'  slot to use if \code{x} is a \linkS4class{SingleCellExperiment} object.
 #'  Default "counts".
-#' @param altExpName The name for the \link[SingleCellExperiment]{altExp} slot
+#' @param altExpName The name for the \link{altExp} slot
 #'  to use. Default "featureSubset".
 #' @param celdaMod Celda model object. Only works if \code{x} is an integer
 #'  counts matrix.
@@ -331,15 +331,15 @@ setMethod(
 #'  matrix, providing a distribution of perplexities and a better sense of the
 #'  quality of a given K/L choice.
 #' @param x A numeric \link{matrix} of counts or a
-#'  \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} returned from \link{celdaGridSearch}
+#'  \linkS4class{SingleCellExperiment} returned from \link{celdaGridSearch}
 #'  with the matrix located in the assay slot under \code{useAssay}.
 #'  Rows represent features and columns represent cells. Must contain
 #'  "celda_grid_search" slot in \code{metadata(x)} if \code{x} is a
-#'  \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.
-#' @param useAssay A string specifying which \link[SummarizedExperiment]{assay}
+#'  \linkS4class{SingleCellExperiment} object.
+#' @param useAssay A string specifying which \link{assay}
 #'  slot to use if \code{x} is a
-#'  \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object. Default "counts".
-#' @param altExpName The name for the \link[SingleCellExperiment]{altExp} slot
+#'  \linkS4class{SingleCellExperiment} object. Default "counts".
+#' @param altExpName The name for the \link{altExp} slot
 #'  to use. Default "featureSubset".
 #' @param celdaList Object of class 'celdaList'. Used only if \code{x} is a
 #'  matrix object.
@@ -352,7 +352,7 @@ setMethod(
 #' @param seed Integer. Passed to \link[withr]{with_seed}. For reproducibility,
 #'  a default value of \code{12345} is used. If \code{NULL}, no calls to
 #'  \link[withr]{with_seed} are made.
-#' @return A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object or
+#' @return A \linkS4class{SingleCellExperiment} object or
 #'  \code{celdaList} object with a \code{perplexity}
 #'  property, detailing the perplexity of all K/L combinations that appeared in
 #'  the celdaList's models.
@@ -394,7 +394,7 @@ setMethod("resamplePerplexity",
                 doResampling = doResampling,
                 numResample = numResample)
         } else {
-            with_seed(seed,
+            withr::with_seed(seed,
                 res <- .resamplePerplexity(
                     counts = counts,
                     celdaList = celdaList,
@@ -433,7 +433,7 @@ setMethod("resamplePerplexity",
                 doResampling = doResampling,
                 numResample = numResample)
         } else {
-            with_seed(seed,
+            withr::with_seed(seed,
                 res <- .resamplePerplexity(
                     counts = x,
                     celdaList = celdaList,
@@ -503,16 +503,16 @@ setMethod("resamplePerplexity",
 #'  K/L combinations
 #' @param x Can be one of
 #' \itemize{
-#'  \item A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object returned from
+#'  \item A \linkS4class{SingleCellExperiment} object returned from
 #'  \code{celdaGridSearch}, \code{recursiveSplitModule},
 #'  or \code{recursiveSplitCell}. Must contain a list named
 #'  \code{"celda_grid_search"} in \code{metadata(x)}.
 #'  \item celdaList object.}
-#' @param altExpName The name for the \link[SingleCellExperiment]{altExp} slot
+#' @param altExpName The name for the \link{altExp} slot
 #'  to use. Default "featureSubset". Only works if \code{x} is a
-#'  \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object.
+#'  \linkS4class{SingleCellExperiment} object.
 #' @param sep Numeric. Breaks in the x axis of the resulting plot.
-#' @param alpha Numeric. Passed to \link[ggplot2]{geom_jitter}. Opacity of the points.
+#' @param alpha Numeric. Passed to \link{geom_jitter}. Opacity of the points.
 #'  Values of alpha range from 0 to 1, with lower values corresponding
 #'  to more transparent colors.
 #' @return A ggplot plot object showing perplexity as a function of clustering
@@ -596,16 +596,16 @@ setMethod("plotGridSearchPerplexity",
         if (nlevels(df$L) > 1) {
             plot <- ggplot2::ggplot(
                 df,
-                ggplot2::aes(x = .data$K, y = .data$perplexity)
+                ggplot2::aes_string(x = "K", y = "perplexity")
             ) +
                 ggplot2::geom_jitter(
                     height = 0, width = 0.1, alpha = alpha,
-                    ggplot2::aes(color = .data$L)
+                    ggplot2::aes_string(color = "L")
                 ) +
                 ggplot2::scale_color_discrete(name = "L") +
-                ggplot2::geom_path(data = lMeansByK, ggplot2::aes(
-                    x = .data$K,
-                    y = .data$mean_perplexity, group = .data$L, color = .data$L
+                ggplot2::geom_path(data = lMeansByK, ggplot2::aes_string(
+                    x = "K",
+                    y = "mean_perplexity", group = "L", color = "L"
                 )) +
                 ggplot2::ylab("Perplexity") +
                 ggplot2::xlab("K") +
@@ -619,13 +619,13 @@ setMethod("plotGridSearchPerplexity",
         } else {
             plot <- ggplot2::ggplot(
                 df,
-                ggplot2::aes(x = .data$K, y = .data$perplexity)) +
+                ggplot2::aes_string(x = "K", y = "perplexity")) +
                 ggplot2::geom_jitter(height = 0, width = 0.1,
                     color = "grey", alpha = alpha) +
                 ggplot2::scale_color_manual(name = "L", values = "black") +
-                ggplot2::geom_path(data = lMeansByK, ggplot2::aes(
-                    x = .data$K,
-                    y = .data$mean_perplexity, group = .data$L, color = .data$L
+                ggplot2::geom_path(data = lMeansByK, ggplot2::aes_string(
+                    x = "K",
+                    y = "mean_perplexity", group = "L", color = "L"
                 )) +
                 ggplot2::ylab("Perplexity") +
                 ggplot2::xlab("K") +
@@ -640,14 +640,14 @@ setMethod("plotGridSearchPerplexity",
     } else {
         plot <- ggplot2::ggplot(
             df,
-            ggplot2::aes(x = .data$L, y = .data$perplexity)) +
+            ggplot2::aes_string(x = "L", y = "perplexity")) +
             ggplot2::geom_jitter(height = 0, width = 0.1,
                 color = "grey", alpha = alpha) +
             ggplot2::geom_path(data = lMeansByK,
-                ggplot2::aes(x = .data$L,
-                    y = .data$mean_perplexity,
-                    group = .data$K,
-                    color = .data$K)) +
+                ggplot2::aes_string(x = "L",
+                    y = "mean_perplexity",
+                    group = "K",
+                    color = "K")) +
             ggplot2::scale_color_manual(name = "K", values = "black") +
             ggplot2::ylab("Perplexity") +
             ggplot2::xlab("L") +
@@ -689,12 +689,12 @@ setMethod("plotGridSearchPerplexity",
     meansByK$K <- as.factor(meansByK$K)
 
     plot <-
-        ggplot2::ggplot(df, ggplot2::aes(x = .data$K, y = .data$perplexity)) +
+        ggplot2::ggplot(df, ggplot2::aes_string(x = "K", y = "perplexity")) +
         ggplot2::geom_jitter(height = 0, width = 0.1,
             color = "grey", alpha = alpha) +
         ggplot2::geom_path(
             data = meansByK,
-            ggplot2::aes(x = .data$K, y = .data$mean_perplexity, group = 1)
+            ggplot2::aes_string(x = "K", y = "mean_perplexity", group = 1)
         ) +
         ggplot2::ylab("Perplexity") +
         ggplot2::xlab("K") +
@@ -738,12 +738,12 @@ setMethod("plotGridSearchPerplexity",
     meansByL$L <- as.factor(meansByL$L)
 
     plot <-
-        ggplot2::ggplot(df, ggplot2::aes(x = .data$L, y = .data$perplexity)) +
+        ggplot2::ggplot(df, ggplot2::aes_string(x = "L", y = "perplexity")) +
         ggplot2::geom_jitter(height = 0, width = 0.1,
             color = "grey", alpha = alpha) +
         ggplot2::geom_path(
             data = meansByL,
-            ggplot2::aes(x = .data$L, y = .data$mean_perplexity, group = 1)
+            ggplot2::aes_string(x = "L", y = "mean_perplexity", group = 1)
         ) +
         ggplot2::ylab("Perplexity") +
         ggplot2::xlab("L") +
@@ -780,22 +780,29 @@ setMethod("plotGridSearchPerplexity",
 #'  by unique K/L combinations. 
 #' @param x Can be one of
 #' \itemize{
-#'  \item A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object returned from
+#'  \item A \linkS4class{SingleCellExperiment} object returned from
 #'  \code{celdaGridSearch}, \code{recursiveSplitModule},
 #'  or \code{recursiveSplitCell}. Must contain a list named
 #'  \code{"celda_grid_search"} in \code{metadata(x)}.
 #'  \item celdaList object.}
-#' @param altExpName The name for the \link[SingleCellExperiment]{altExp} slot
+#' @param altExpName The name for the \link{altExp} slot
 #'  to use. Default "featureSubset".
 #' @param sep Numeric. Breaks in the x axis of the resulting plot.
-#' @param alpha Numeric. Passed to \link[ggplot2]{geom_jitter}. Opacity of the points.
+#' @param alpha Numeric. Passed to \link{geom_jitter}. Opacity of the points.
 #'  Values of alpha range from 0 to 1, with lower values corresponding
 #'  to more transparent colors.
+#' @param plotKnees Logical. If \code{TRUE}, adds dashed vertical lines and
+#'  labels marking the knee points detected on the mean perplexity curve.
+#'  Default \code{FALSE}.
+#' @param knees Integer vector. Which knee points to plot (e.g. \code{1:3}
+#'  for the first three). Each value must be between 1 and 5.
+#'  Default \code{1:3}.
 #' @return A ggplot plot object showing perplexity differences as a function of
 #'  clustering parameters.
 #' @export
 setGeneric("plotRPC",
-    function(x, altExpName = "featureSubset", sep = 5, alpha = 0.5) {
+    function(x, altExpName = "featureSubset", sep = 5, alpha = 0.5,
+             plotKnees = FALSE, knees = 1:3) {
     standardGeneric("plotRPC")})
 
 
@@ -807,12 +814,12 @@ setGeneric("plotRPC",
 #' @export
 setMethod("plotRPC",
     signature(x = "SingleCellExperiment"),
-    function(x, altExpName = "featureSubset", sep = 5, alpha = 0.5) {
+    function(x, altExpName = "featureSubset", sep = 5, alpha = 0.5,
+             plotKnees = FALSE, knees = 1:3) {
         altExp <- SingleCellExperiment::altExp(x, altExpName)
         model <- altExp@metadata$celda_grid_search@celdaGridSearchParameters$
             model
         celdaList <- S4Vectors::metadata(altExp)$celda_grid_search
-
         if (model == "celda_C") {
             g <- .plotRPCC(celdaList, sep, 
                 alpha = alpha)
@@ -828,6 +835,49 @@ setMethod("plotRPC",
                 "celdaGridSearchParameters$model must be",
                 " one of 'celda_C', 'celda_G', or 'celda_CG'")
         }
+        if (isTRUE(plotKnees)) {
+          if (!is.numeric(knees) || anyNA(knees) || any(knees < 1)) {
+            stop("'knees' must be a vector of positive integers.")
+          }
+          knees <- sort(unique(as.integer(knees)))
+          if (any(knees > 5)) {
+            stop("'knees' cannot exceed 5.",
+                 "Requested: ", paste(knees, collapse = ", "), ".")
+          }
+          
+          rp <- runParams(celdaList)
+          if (model == "celda_C") {
+            R <- rp$K
+          }
+          else if (model == "celda_G" || model == "celda_CG") {
+            R <- rp$L
+          }
+          else {
+            stop("Model must be one of 'celda_C', 'celda_G', or 'celda_CG'")
+          }
+          P <- rp$mean_perplexity
+          o <- order(R); R <- R[o]; P <- P[o]
+          pos <- list()
+          for (i in knees) {
+            n <- paste("knee point",i)
+            pos[[n]] <- .findKnee(R, P, nPoints = i)
+            }
+          lv  <- sort(unique(R))[-1]
+          
+          kneeDf <- data.frame(knee = knees, pos = unlist(pos), nx = match(pos, lv))
+          labelRpc <- stats::aggregate(knee ~ nx + pos, data = kneeDf,
+                                       FUN = function(k) paste(k, collapse = " & "))
+          labelRpc$label <- paste0("knee point ", labelRpc$knee, " = ", labelRpc$pos)
+          labelRpc$y <- Inf
+          g <- g + ggplot2::geom_vline(xintercept = labelRpc$nx,
+                                       linetype = "dashed", colour = "red") +
+            ggplot2::geom_text(
+              data = labelRpc,
+              ggplot2::aes(x = .data$nx, y = .data$y, label = .data$label),
+              vjust = 2, color = "red", hjust = -0.05, check_overlap = TRUE
+            )
+        }
+        
         return(g)
     }
 )
@@ -898,14 +948,14 @@ setMethod("plotRPC",
         
         if (nlevels(dt$L) > 1) {
             plot <- ggplot2::ggplot(dt[!is.na(perpdiffK), ],
-                ggplot2::aes(x = .data$K,
-                    y = .data$perpdiffK)) +
+                ggplot2::aes_string(x = "K",
+                    y = "perpdiffK")) +
                 ggplot2::geom_jitter(height = 0, width = 0.1, alpha = alpha,
-                    ggplot2::aes(color = .data$L)) +
+                    ggplot2::aes_string(color = "L")) +
                 ggplot2::scale_color_discrete(name = "L") +
                 ggplot2::geom_path(data = diffMeansByK,
-                    ggplot2::aes(x = .data$K, y = .data$spline, group = .data$L,
-                        color = .data$L), linewidth = 1) +
+                    ggplot2::aes_string(x = "K", y = "spline", group = "L",
+                        color = "L"), size = 1) +
                 ggplot2::ylab("Rate of perplexity change") +
                 ggplot2::xlab("K") +
                 ggplot2::scale_x_discrete(
@@ -916,14 +966,14 @@ setMethod("plotRPC",
                     panel.grid.minor = ggplot2::element_blank())
         } else {
             plot <- ggplot2::ggplot(dt[!is.na(perpdiffK), ],
-                ggplot2::aes(x = .data$K,
-                    y = .data$perpdiffK)) +
+                ggplot2::aes_string(x = "K",
+                    y = "perpdiffK")) +
                 ggplot2::geom_jitter(height = 0, width = 0.1,
                     color = "grey", alpha = alpha) +
                 ggplot2::scale_color_manual(name = "L", values = "black") +
                 ggplot2::geom_path(data = diffMeansByK,
-                    ggplot2::aes(x = .data$K, y = .data$spline, group = .data$L,
-                        color = .data$L), linewidth = 1) +
+                    ggplot2::aes_string(x = "K", y = "spline", group = "L",
+                        color = "L"), size = 1) +
                 ggplot2::ylab("Rate of perplexity change") +
                 ggplot2::xlab("K") +
                 ggplot2::scale_x_discrete(
@@ -953,16 +1003,15 @@ setMethod("plotRPC",
         diffMeansByL$spline <- stats::smooth.spline(diffMeansByL$meanperpdiffL)$y
         
         plot <- ggplot2::ggplot(dt[!is.na(perpdiffL), ],
-            ggplot2::aes(x = .data$L, y = .data$perpdiffL)) +
+            ggplot2::aes_string(x = "L", y = "perpdiffL")) +
             ggplot2::geom_jitter(height = 0, width = 0.1,
                 color = "grey", alpha = alpha) +
             ggplot2::scale_color_manual(name = "K", values = "black") +
             ggplot2::geom_path(
                 data = diffMeansByL,
-                ggplot2::aes(
-                    x = .data$L, y = .data$spline,
-                    group = .data$K, color = .data$K),
-                linewidth = 1) +
+                ggplot2::aes_string(
+                    x = "L", y = "spline", group = "K", color = "K"),
+                size = 1) +
             ggplot2::ylab("Rate of perplexity change") +
             ggplot2::xlab("L") +
             ggplot2::scale_x_discrete(
@@ -1016,13 +1065,13 @@ setMethod("plotRPC",
         diffMeansByK$spline <- stats::smooth.spline(diffMeansByK$meanperpdiffK)$y
         
         plot <- ggplot2::ggplot(dt[!is.na(perpdiffK), ],
-            ggplot2::aes(x = .data$K,
-                y = .data$perpdiffK)) +
+            ggplot2::aes_string(x = "K",
+                y = "perpdiffK")) +
             ggplot2::geom_jitter(height = 0, width = 0.1,
                 color = "grey", alpha = alpha) +
             ggplot2::geom_path(data = diffMeansByK,
-                ggplot2::aes(x = .data$K, y = .data$spline, group = 1),
-                linewidth = 1) +
+                ggplot2::aes_string(x = "K", y = "spline", group = 1),
+                size = 1) +
             ggplot2::ylab("Perplexity difference compared to previous K") +
             ggplot2::xlab("K") +
             ggplot2::scale_x_discrete(
@@ -1075,13 +1124,13 @@ setMethod("plotRPC",
         diffMeansByL$spline <- stats::smooth.spline(diffMeansByL$meanperpdiffL)$y
         
         plot <- ggplot2::ggplot(dt[!is.na(perpdiffL), ],
-            ggplot2::aes(x = .data$L,
-                y = .data$perpdiffL)) +
+            ggplot2::aes_string(x = "L",
+                y = "perpdiffL")) +
             ggplot2::geom_jitter(height = 0, width = 0.1,
                 color = "grey", alpha = alpha) +
             ggplot2::geom_path(data = diffMeansByL,
-                ggplot2::aes(x = .data$L, y = .data$spline, group = 1),
-                linewidth = 1) +
+                ggplot2::aes_string(x = "L", y = "spline", group = 1),
+                size = 1) +
             ggplot2::ylab("Perplexity difference compared to previous L") +
             ggplot2::xlab("L") +
             ggplot2::scale_x_discrete(

@@ -6,29 +6,51 @@
 \alias{plotRPC,celdaList-method}
 \title{Visualize perplexity differences of a list of celda models}
 \usage{
-plotRPC(x, altExpName = "featureSubset", sep = 5, alpha = 0.5)
+plotRPC(
+  x,
+  altExpName = "featureSubset",
+  sep = 5,
+  alpha = 0.5,
+  plotKnees = FALSE,
+  knees = 1:3
+)
 
-\S4method{plotRPC}{SingleCellExperiment}(x, altExpName = "featureSubset", sep = 5, alpha = 0.5)
+\S4method{plotRPC}{SingleCellExperiment}(
+  x,
+  altExpName = "featureSubset",
+  sep = 5,
+  alpha = 0.5,
+  plotKnees = FALSE,
+  knees = 1:3
+)
 
 \S4method{plotRPC}{celdaList}(x, sep = 5, alpha = 0.5)
 }
 \arguments{
 \item{x}{Can be one of
 \itemize{
- \item A \link[SingleCellExperiment:SingleCellExperiment-class]{SingleCellExperiment} object returned from
+ \item A \linkS4class{SingleCellExperiment} object returned from
  \code{celdaGridSearch}, \code{recursiveSplitModule},
  or \code{recursiveSplitCell}. Must contain a list named
  \code{"celda_grid_search"} in \code{metadata(x)}.
  \item celdaList object.}}
 
-\item{altExpName}{The name for the \link[SingleCellExperiment]{altExp} slot
+\item{altExpName}{The name for the \link{altExp} slot
 to use. Default "featureSubset".}
 
 \item{sep}{Numeric. Breaks in the x axis of the resulting plot.}
 
-\item{alpha}{Numeric. Passed to \link[ggplot2]{geom_jitter}. Opacity of the points.
+\item{alpha}{Numeric. Passed to \link{geom_jitter}. Opacity of the points.
 Values of alpha range from 0 to 1, with lower values corresponding
 to more transparent colors.}
+
+\item{plotKnees}{Logical. If \code{TRUE}, adds dashed vertical lines and
+labels marking the knee points detected on the mean perplexity curve.
+Default \code{FALSE}.}
+
+\item{knees}{Integer vector. Which knee points to plot (e.g. \code{1:3}
+for the first three). Each value must be between 1 and 5.
+Default \code{1:3}.}
 }
 \value{
 A ggplot plot object showing perplexity differences as a function of
