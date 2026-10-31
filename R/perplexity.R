@@ -868,13 +868,16 @@ setMethod("plotRPC",
           labelRpc <- stats::aggregate(knee ~ nx + pos, data = kneeDf,
                                        FUN = function(k) paste(k, collapse = " & "))
           labelRpc$label <- paste0("knee point ", labelRpc$knee, " = ", labelRpc$pos)
-          labelRpc$y <- Inf
+          labelRpc$y <- -Inf
+          labelRpc$vjust <- -0.5 - 1.5 * (seq_len(nrow(labelRpc)) - 1)
+          labelRpc$hjust <- ifelse(labelRpc$nx > 0.7 * length(lv), 1.05, -0.05)
           g <- g + ggplot2::geom_vline(xintercept = labelRpc$nx,
                                        linetype = "dashed", colour = "red") +
             ggplot2::geom_text(
               data = labelRpc,
-              ggplot2::aes(x = .data$nx, y = .data$y, label = .data$label),
-              vjust = 2, color = "red", hjust = -0.05, check_overlap = TRUE
+              ggplot2::aes(x = .data$nx, y = .data$y, label = .data$label,
+                           vjust = .data$vjust, hjust = .data$hjust)
+              , color = "red"
             )
         }
         
